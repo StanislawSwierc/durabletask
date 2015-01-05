@@ -705,10 +705,9 @@ namespace DurableTask
                 .Select(historyEventEntity => historyEventEntity.HistoryEvent));
 
             string history = JsonConvert.SerializeObject(
-                events, Formatting.Indented, new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.Objects
-                });
+                events,
+                Formatting.Indented,
+                JsonConvert.DefaultSettings().WithTypeNameHandling(TypeNameHandling.Objects));
             return history;
         }
 
@@ -837,7 +836,7 @@ namespace DurableTask
             }
 
             string serializedToken = JsonConvert.SerializeObject(continuationToken,
-                new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.None});
+                JsonConvert.DefaultSettings().WithTypeNameHandling(TypeNameHandling.None));
             return Convert.ToBase64String(Encoding.Unicode.GetBytes(serializedToken));
         }
 

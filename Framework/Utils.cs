@@ -163,7 +163,7 @@ namespace DurableTask
             }
 
             byte[] serializedBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj,
-                new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.All}));
+                JsonConvert.DefaultSettings().WithTypeNameHandling(TypeNameHandling.All)));
 
             objectStream.Write(serializedBytes, 0, serializedBytes.Length);
             objectStream.Position = 0;
@@ -184,7 +184,7 @@ namespace DurableTask
 
             return JsonConvert.DeserializeObject<T>(
                 Encoding.UTF8.GetString(serializedBytes),
-                new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.All});
+                JsonConvert.DefaultSettings().WithTypeNameHandling(TypeNameHandling.All));
         }
 
         static bool IsGzipStream(Stream stream)

@@ -24,7 +24,7 @@ namespace DurableTask
         readonly JsonSerializer serializer;
 
         public JsonDataConverter()
-            : this(new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects})
+            : this(JsonConvert.DefaultSettings().WithTypeNameHandling(TypeNameHandling.Objects))
         {
         }
 

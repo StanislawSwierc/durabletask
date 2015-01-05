@@ -178,11 +178,9 @@ namespace DurableTask
                     runtimeState.OrchestrationInstance,
                     "Executing user orchestration: {0}",
                     JsonConvert.SerializeObject(runtimeState.GetOrchestrationRuntimeStateDump(),
-                        new JsonSerializerSettings
-                        {
-                            TypeNameHandling = TypeNameHandling.Auto,
-                            Formatting = Formatting.Indented
-                        }));
+                        JsonConvert.DefaultSettings()
+                            .WithTypeNameHandling(TypeNameHandling.Auto)
+                            .WithFormatting(Formatting.Indented)));
 
                 IEnumerable<OrchestratorAction> decisions = ExecuteOrchestration(runtimeState);
 
@@ -345,7 +343,7 @@ namespace DurableTask
                         }
 
                         string serializedState = JsonConvert.SerializeObject(newState,
-                            new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Auto});
+                            JsonConvert.DefaultSettings().WithTypeNameHandling(TypeNameHandling.Auto));
                         var writer = new StreamWriter(ms);
                         writer.Write(serializedState);
                         writer.Flush();
@@ -623,7 +621,7 @@ namespace DurableTask
                 }
 
                 var events = JsonConvert.DeserializeObject<IList<HistoryEvent>>(serializedState,
-                    new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Auto});
+                    JsonConvert.DefaultSettings().WithTypeNameHandling(TypeNameHandling.Auto));
                 runtimeState = new OrchestrationRuntimeState(events);
             }
             return runtimeState;
@@ -653,7 +651,7 @@ namespace DurableTask
                 "Instance Id '{0}' completed in state {1} with result: {2}",
                 runtimeState.OrchestrationInstance, runtimeState.OrchestrationStatus, completeOrchestratorAction.Result);
             string history = JsonConvert.SerializeObject(runtimeState.Events, Formatting.Indented,
-                new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects});
+                JsonConvert.DefaultSettings().WithTypeNameHandling(TypeNameHandling.Objects));
             TraceHelper.TraceInstance(TraceEventType.Information, runtimeState.OrchestrationInstance,
                 () => Utils.EscapeJson(history));
 

@@ -65,11 +65,9 @@ namespace DurableTask.Tracking
         public override IDictionary<string, EntityProperty> WriteEntity(OperationContext operationContext)
         {
             string serializedHistoryEvent = JsonConvert.SerializeObject(HistoryEvent,
-                new JsonSerializerSettings
-                {
-                    Formatting = Formatting.Indented,
-                    TypeNameHandling = TypeNameHandling.Objects
-                });
+                JsonConvert.DefaultSettings()
+                    .WithFormatting(Formatting.Indented)
+                    .WithTypeNameHandling(TypeNameHandling.Objects));
 
             // replace with a generic event with the truncated history so at least we have some record
             // note that this makes the history stored in the instance store unreplayable. so any replay logic
@@ -79,11 +77,9 @@ namespace DurableTask.Tracking
             {
                 serializedHistoryEvent = JsonConvert.SerializeObject(new GenericEvent(HistoryEvent.EventId,
                     serializedHistoryEvent.Substring(0, MaxStringLengthForAzureTableColumn) + " ....(truncated)..]"),
-                    new JsonSerializerSettings
-                    {
-                        Formatting = Formatting.Indented,
-                        TypeNameHandling = TypeNameHandling.Objects
-                    });
+                    JsonConvert.DefaultSettings()
+                        .WithFormatting(Formatting.Indented)
+                        .WithTypeNameHandling(TypeNameHandling.Objects));
             }
 
             var retVals = new Dictionary<string, EntityProperty>();
@@ -109,7 +105,7 @@ namespace DurableTask.Tracking
 
             string serializedHistoryEvent = GetValue("HistoryEvent", properties, property => property.StringValue);
             HistoryEvent = JsonConvert.DeserializeObject<HistoryEvent>(serializedHistoryEvent,
-                new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects});
+                JsonConvert.DefaultSettings().WithTypeNameHandling(TypeNameHandling.Objects));
         }
 
         public override string ToString()
